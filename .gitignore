@@ -1,0 +1,33 @@
+# Godot 4 generated imports, editor cache, and local state
+.godot/
+.import/
+*.import
+
+# Local editor and IDE settings
+.vscode/
+.idea/
+*.code-workspace
+*.swp
+*.swo
+*~
+
+# OS-specific files
+.DS_Store
+Thumbs.db
+Desktop.ini
+
+# Local builds and export output
+build/
+builds/
+dist/
+exports/
+*.pck
+*.exe
+*.app/
+*.dmg
+*.apk
+*.aab
+
+# Local logs and temporary files
+*.log
+*.tmp
