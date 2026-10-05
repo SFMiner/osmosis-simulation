@@ -1,7 +1,7 @@
 class_name ParticleField
 extends Node2D
 
-const CENTER := Vector2(640, 315)
+const CENTER := Vector2(640, 300)
 const AREA := Rect2(75, 75, 1130, 485)
 var rng := RandomNumberGenerator.new()
 var particles: Array[Dictionary] = []
@@ -25,6 +25,7 @@ func reset() -> void:
 		for i in 58:
 			var is_inside := side == 0
 			particles.append({"pos": random_position(is_inside), "inside": is_inside, "solute": i < 13, "angle": rng.randf_range(0.0, TAU), "cross": 0.0, "from": Vector2.ZERO, "to": Vector2.ZERO})
+	update_outside_solute()
 	queue_redraw()
 
 func random_position(is_inside: bool) -> Vector2:
@@ -39,7 +40,25 @@ func update_state(new_radius: float, new_flow: float, c_in: float, c_out: float)
 	flow = new_flow
 	inside = c_in
 	outside = c_out
+	update_outside_solute()
 	queue_redraw()
+
+func update_outside_solute() -> void:
+	# Change the reservoir mix without changing internal solute or crossing water.
+	var desired: int = maxi(0, roundi(13.0 * outside))
+	var current: int = 0
+	for p: Dictionary in particles:
+		if not p.inside and p.solute:
+			current += 1
+	for p: Dictionary in particles:
+		if p.inside or p.cross > 0.0:
+			continue
+		if p.solute and current > desired:
+			p.solute = false
+			current -= 1
+		elif not p.solute and current < desired:
+			p.solute = true
+			current += 1
 
 func set_stopped(value: bool) -> void:
 	stopped = value
